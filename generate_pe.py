@@ -20,29 +20,37 @@ def build_pe():
     app_url = "https://ais-pre-6fan2e54gdsoqajpyppwdg-702394825518.europe-west2.run.app"
     title_str = "A.U.R.A. Converter Studio v1.1"
     msg_str = (
-        "Установка A.U.R.A. Converter Studio v1.1 успешно выполнена!\r\n\r\n"
-        "Разработчик: The Godot Entertaiment Inc.\r\n"
-        "Ярлык приложения создан на Рабочем столе.\r\n\r\n"
-        "Запустить A.U.R.A. Converter Studio сейчас?"
+        "Установка A.U.R.A. Converter Studio v1.1 успешно завершена!\r\n\r\n"
+        "Разработчик: The Godot Entertaiment Inc.\r\n\r\n"
+        "1. Папка программы создана:\r\n"
+        "   AppData\\Local\\Programs\\AURA_Converter_Studio\r\n\r\n"
+        "2. Ярлыки добавлены на ваш Рабочий стол.\r\n\r\n"
+        "Папка открыта в Проводнике Windows, приложение запущено."
     )
     op_open = "open"
-    app_target = app_url
 
     # Convert to UTF-16LE with null-terminator
     w_title = (title_str + '\0').encode('utf-16le')
     w_msg = (msg_str + '\0').encode('utf-16le')
     w_op = (op_open + '\0').encode('utf-16le')
-    w_target = (app_target + '\0').encode('utf-16le')
     
-    # PowerShell command to create desktop shortcut
-    ps_cmd = (
-        "$d=[Environment]::GetFolderPath('Desktop');"
-        "$s=\"[InternetShortcut]`nURL=" + app_url + "`nIconIndex=0`nIconFile=shell32.dll,138\";"
-        "[IO.File]::WriteAllText(\"$d\\A.U.R.A. Converter Studio.url\",$s);"
-        "Start-Process '" + app_url + "'"
+    # cmd.exe command to create directory, files, copy shortcuts to all desktops, run WScript lnk creator, and open folder
+    cmd_payload = (
+        '/c "mkdir "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio" 2>nul & '
+        '(echo [InternetShortcut]&echo URL=' + app_url + '&echo IconIndex=0&echo IconFile=shell32.dll,138) > "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio\\A.U.R.A. Converter Studio.url" & '
+        'copy /y "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio\\A.U.R.A. Converter Studio.url" "%USERPROFILE%\\Desktop\\A.U.R.A. Converter Studio.url" 2>nul & '
+        'copy /y "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio\\A.U.R.A. Converter Studio.url" "%USERPROFILE%\\Рабочий стол\\A.U.R.A. Converter Studio.url" 2>nul & '
+        'copy /y "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio\\A.U.R.A. Converter Studio.url" "%USERPROFILE%\\OneDrive\\Рабочий стол\\A.U.R.A. Converter Studio.url" 2>nul & '
+        'copy /y "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio\\A.U.R.A. Converter Studio.url" "%USERPROFILE%\\OneDrive\\Desktop\\A.U.R.A. Converter Studio.url" 2>nul & '
+        'copy /y "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio\\A.U.R.A. Converter Studio.url" "%PUBLIC%\\Desktop\\A.U.R.A. Converter Studio.url" 2>nul & '
+        '(echo @echo off&echo start "" "' + app_url + '") > "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio\\AURA_Launcher.bat" & '
+        '(echo [A.U.R.A. Converter Studio v1.1]&echo Developer: The Godot Entertaiment Inc.&echo Version: 1.1) > "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio\\version.txt" & '
+        'powershell -NoProfile -ExecutionPolicy Bypass -Command "$w=New-Object -ComObject WScript.Shell;$t=\\"$env:LOCALAPPDATA\\Programs\\AURA_Converter_Studio\\AURA_Launcher.bat\\";@(\\"$env:USERPROFILE\\Desktop\\",\\"$env:USERPROFILE\\Рабочий стол\\",\\"$env:USERPROFILE\\OneDrive\\Рабочий стол\\",\\"$env:USERPROFILE\\OneDrive\\Desktop\\",[Environment]::GetFolderPath(\'Desktop\')) | ForEach-Object { if(Test-Path $_) { $s=$w.CreateShortcut(\\"$_\\A.U.R.A. Converter Studio.lnk\\"); $s.TargetPath=$t; $s.IconLocation=\'shell32.dll,138\'; $s.Save() } }" 2>nul & '
+        'start "" "%LOCALAPPDATA%\\Programs\\AURA_Converter_Studio" & '
+        'start "" "' + app_url + '""'
     )
-    w_ps_exe = ("powershell.exe\0").encode('utf-16le')
-    w_ps_args = ("-WindowStyle Hidden -Command \"" + ps_cmd + "\"\0").encode('utf-16le')
+    w_cmd_exe = ("cmd.exe\0").encode('utf-16le')
+    w_cmd_args = (cmd_payload + '\0').encode('utf-16le')
 
     # .rdata section will hold:
     # 1. Import Directory Table (3 descriptors + 1 null terminator = 4 * 20 = 80 bytes)
@@ -110,11 +118,11 @@ def build_pe():
     offset_w_op = len(rdata)
     rdata.extend(w_op)
     
-    offset_w_ps_exe = len(rdata)
-    rdata.extend(w_ps_exe)
+    offset_w_cmd_exe = len(rdata)
+    rdata.extend(w_cmd_exe)
     
-    offset_w_ps_args = len(rdata)
-    rdata.extend(w_ps_args)
+    offset_w_cmd_args = len(rdata)
+    rdata.extend(w_cmd_args)
     
     offset_w_title = len(rdata)
     rdata.extend(w_title)
@@ -215,14 +223,14 @@ def build_pe():
     disp = rip_disp(rdata_rva + offset_w_op, text_rva + len(text) + 7)
     text.extend(b'\x48\x8D\x15' + disp)
     
-    # lea r8, [rip + w_ps_exe]
+    # lea r8, [rip + w_cmd_exe]
     # instruction length = 7 (4C 8D 05 [disp32])
-    disp = rip_disp(rdata_rva + offset_w_ps_exe, text_rva + len(text) + 7)
+    disp = rip_disp(rdata_rva + offset_w_cmd_exe, text_rva + len(text) + 7)
     text.extend(b'\x4C\x8D\x05' + disp)
     
-    # lea r9, [rip + w_ps_args]
+    # lea r9, [rip + w_cmd_args]
     # instruction length = 7 (4C 8D 0D [disp32])
-    disp = rip_disp(rdata_rva + offset_w_ps_args, text_rva + len(text) + 7)
+    disp = rip_disp(rdata_rva + offset_w_cmd_args, text_rva + len(text) + 7)
     text.extend(b'\x4C\x8D\x0D' + disp)
     
     # mov qword ptr [rsp + 0x20], 0 (lpDirectory = NULL)

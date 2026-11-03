@@ -137,23 +137,35 @@ export const InstallerModal: React.FC<InstallerModalProps> = ({ isOpen, onClose 
               </div>
 
               <div className="space-y-2.5">
-                <div className="p-3 rounded border border-neutral-900 dark:border-neutral-100 bg-neutral-50 dark:bg-neutral-900/40 space-y-1">
+                <div 
+                  onClick={downloadWindowsSetupExe}
+                  className="p-3 rounded border border-neutral-900 dark:border-neutral-100 bg-neutral-50 dark:bg-neutral-900/40 space-y-1.5 cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
+                >
                   <div className="flex items-center justify-between font-bold text-neutral-900 dark:text-white">
-                    <span>1. Нативный установщик Windows (.EXE)</span>
+                    <span className="flex items-center gap-1.5">
+                      <Download className="w-3.5 h-3.5 text-neutral-900 dark:text-white" />
+                      1. Нативный установщик Windows (.EXE)
+                    </span>
                     <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400">Рекомендуется</span>
                   </div>
-                  <p className="text-neutral-600 dark:text-neutral-400 text-[11px]">
-                    Бинарный исполняемый файл x64. При запуске выводит нативное окно Windows и создает ярлык на Рабочем столе.
+                  <p className="text-neutral-600 dark:text-neutral-400 text-[11px] leading-relaxed">
+                    Бинарный PE32+ (x64) файл. Автоматически создает папку <code className="bg-neutral-200 dark:bg-neutral-800 px-1 py-0.5 rounded font-mono text-[10px] text-neutral-900 dark:text-neutral-200">AppData\Local\Programs\AURA_Converter_Studio</code>, размещает ярлык на Рабочем столе (включая OneDrive и русский Windows), открывает папку в Проводнике и запускает приложение.
                   </p>
                 </div>
 
-                <div className="p-3 rounded border border-neutral-300 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/20 space-y-1">
+                <div 
+                  onClick={downloadWindowsBatchInstaller}
+                  className="p-3 rounded border border-neutral-300 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/20 space-y-1.5 cursor-pointer hover:bg-neutral-100/70 dark:hover:bg-neutral-850 transition-colors"
+                >
                   <div className="flex items-center justify-between font-semibold text-neutral-800 dark:text-neutral-200">
-                    <span>2. Скрипт быстрой установки (.BAT)</span>
-                    <span className="text-[10px] font-mono text-neutral-500">Без предупреждений SmartScreen</span>
+                    <span className="flex items-center gap-1.5">
+                      <Terminal className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-400" />
+                      2. Скрипт быстрой установки (.BAT)
+                    </span>
+                    <span className="text-[10px] font-mono text-neutral-500">100% совместимость</span>
                   </div>
-                  <p className="text-neutral-600 dark:text-neutral-400 text-[11px]">
-                    100% совместимый командный файл Windows, запускающийся в один клик без системных предупреждений.
+                  <p className="text-neutral-600 dark:text-neutral-400 text-[11px] leading-relaxed">
+                    Командный файл Windows для мгновенного развертывания без SmartScreen: создает папку программы, ярлыки и открывает приложение.
                   </p>
                 </div>
               </div>
@@ -191,11 +203,26 @@ export const InstallerModal: React.FC<InstallerModalProps> = ({ isOpen, onClose 
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                 <div className="space-y-1">
                   <h2 className="text-sm font-bold text-neutral-900 dark:text-white">
-                    Файл AURA_Converter_Studio_v1.1_Setup.exe готов!
+                    Установщик AURA_Converter_Studio_v1.1_Setup.exe готов!
                   </h2>
                   <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                    Загрузка файла началась автоматически. Запустите скачанный файл на вашем компьютере: на экране появится диалоговое окно подтверждения установки, и на вашем Рабочем столе появится ярлык программы.
+                    Загрузка началась автоматически. При запуске установщик выполнит следующие действия:
                   </p>
+                </div>
+              </div>
+
+              <div className="p-3 rounded bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-850 space-y-2 text-neutral-700 dark:text-neutral-300 text-[11px]">
+                <div className="flex items-start gap-2">
+                  <span className="font-mono font-bold text-neutral-900 dark:text-white shrink-0">1.</span>
+                  <span>Создает рабочую папку: <code className="bg-neutral-200 dark:bg-neutral-800 px-1 py-0.5 rounded font-mono text-neutral-900 dark:text-white">AppData\Local\Programs\AURA_Converter_Studio</code></span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-mono font-bold text-neutral-900 dark:text-white shrink-0">2.</span>
+                  <span>Создает ярлык <b className="text-neutral-900 dark:text-white">A.U.R.A. Converter Studio</b> на Рабочем столе (поддерживает русский рабочий стол и OneDrive)</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-mono font-bold text-neutral-900 dark:text-white shrink-0">3.</span>
+                  <span>Автоматически открывает папку программы в Проводнике Windows и запускает студию</span>
                 </div>
               </div>
 
@@ -205,7 +232,7 @@ export const InstallerModal: React.FC<InstallerModalProps> = ({ isOpen, onClose 
                   className="p-2.5 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span>Скачать .EXE файл</span>
+                  <span>Скачать .EXE установщик</span>
                 </button>
 
                 <button
@@ -218,7 +245,7 @@ export const InstallerModal: React.FC<InstallerModalProps> = ({ isOpen, onClose 
               </div>
 
               <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800 flex items-center justify-between text-[11px] text-neutral-500 font-mono">
-                <span>Ярлык на Рабочий стол:</span>
+                <span>Прямой ярлык на Рабочий стол:</span>
                 <button
                   onClick={downloadDesktopShortcut}
                   className="text-neutral-900 dark:text-white hover:underline cursor-pointer font-bold"
