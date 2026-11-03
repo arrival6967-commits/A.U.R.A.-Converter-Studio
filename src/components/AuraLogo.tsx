@@ -25,7 +25,7 @@ export const AuraLogo: React.FC<AuraLogoProps> = ({ size = 'md', className = '' 
           r="14.5"
           stroke="currentColor"
           strokeWidth="1.2"
-          className="text-neutral-700 dark:text-neutral-700"
+          className="text-neutral-400 dark:text-neutral-700"
           strokeDasharray="2 3"
         />
 
@@ -36,7 +36,7 @@ export const AuraLogo: React.FC<AuraLogoProps> = ({ size = 'md', className = '' 
           r="11"
           stroke="currentColor"
           strokeWidth="1.2"
-          className="text-neutral-400 dark:text-neutral-400 opacity-60"
+          className="text-neutral-600 dark:text-neutral-400 opacity-60"
         />
 
         {/* Architectural Stylized "A" Prism with Audio-Video Beam */}
@@ -55,7 +55,7 @@ export const AuraLogo: React.FC<AuraLogoProps> = ({ size = 'md', className = '' 
           stroke="currentColor"
           strokeWidth="1.4"
           strokeLinecap="round"
-          className="text-neutral-950 dark:text-neutral-950"
+          className="text-white dark:text-neutral-950"
         />
 
         {/* Center Aura Focal Point */}
@@ -64,7 +64,7 @@ export const AuraLogo: React.FC<AuraLogoProps> = ({ size = 'md', className = '' 
           cy="16"
           r="1.2"
           fill="currentColor"
-          className="text-neutral-950 dark:text-neutral-950"
+          className="text-white dark:text-neutral-950"
         />
       </svg>
     </div>

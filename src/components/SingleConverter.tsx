@@ -70,7 +70,6 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
   const [task, setTask] = useState<ConversionTask | null>(null);
   const [lastFinishedItem, setLastFinishedItem] = useState<DownloadHistoryItem | null>(null);
 
-  // Analyze URL handler
   const handleAnalyze = async (urlToTest?: string) => {
     const target = urlToTest || urlInput;
     if (!target.trim()) return;
@@ -103,7 +102,6 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
     }
   };
 
-  // Convert handler
   const handleStartConversion = async () => {
     if (!metadata) return;
 
@@ -215,23 +213,23 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
     <div className="flex-1 overflow-y-auto p-6 space-y-6">
       {/* Strict Minimal Top Banner */}
       <div className="max-w-4xl mx-auto space-y-3">
-        <div className="flex items-baseline justify-between border-b border-neutral-800/80 pb-3">
+        <div className="flex items-baseline justify-between border-b border-neutral-200 dark:border-neutral-800/80 pb-3">
           <div>
-            <h1 className="text-base font-semibold text-white tracking-tight">
+            <h1 className="text-base font-bold text-neutral-900 dark:text-white tracking-tight">
               Переформатирование потока
             </h1>
-            <p className="text-xs text-neutral-400 mt-0.5">
+            <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-0.5">
               Прямая загрузка и конвертация с YouTube, Reddit, TikTok, X и аудиохостингов.
             </p>
           </div>
-          <div className="text-[11px] font-mono text-neutral-400">
+          <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
             A.U.R.A. Resampling Core
           </div>
         </div>
 
         {/* Minimal URL Input */}
-        <div className="flex items-center gap-2 p-1 rounded-md bg-neutral-900 border border-neutral-800 focus-within:border-neutral-600 transition-colors">
-          <div className="pl-2.5 text-neutral-500">
+        <div className="flex items-center gap-2 p-1.5 rounded-md bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 shadow-2xs focus-within:border-neutral-500 dark:focus-within:border-neutral-600 transition-colors">
+          <div className="pl-2.5 text-neutral-400 dark:text-neutral-500">
             <Link2 className="w-4 h-4" />
           </div>
           <input
@@ -240,12 +238,12 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
             onChange={(e) => setUrlInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
             placeholder="Вставьте ссылку на медиа (YouTube, Reddit, TikTok, Instagram, X, SoundCloud)..."
-            className="flex-1 bg-transparent px-2 py-1.5 text-xs text-neutral-100 placeholder:text-neutral-400 focus:outline-none"
+            className="flex-1 bg-transparent px-2 py-1.5 text-xs text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none"
           />
           {urlInput && (
             <button
               onClick={() => setUrlInput('')}
-              className="text-neutral-400 hover:text-neutral-200 text-xs px-2 cursor-pointer"
+              className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200 text-xs px-2 cursor-pointer"
             >
               Сброс
             </button>
@@ -253,7 +251,7 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
           <button
             onClick={() => handleAnalyze()}
             disabled={isAnalyzing || !urlInput.trim()}
-            className="px-3.5 py-1.5 rounded bg-white hover:bg-neutral-200 disabled:opacity-40 text-neutral-950 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-4 py-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-40 shadow-xs"
           >
             {isAnalyzing ? (
               <>
@@ -267,17 +265,17 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
         </div>
 
         {/* Minimal Text Separated Presets */}
-        <div className="flex items-center gap-2 text-xs text-neutral-400 pt-0.5">
-          <span className="text-[11px] text-neutral-400">Тестовые источники:</span>
+        <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400 pt-0.5">
+          <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">Тестовые источники:</span>
           {SAMPLE_URLS.map((sample, idx) => (
             <React.Fragment key={sample.label}>
-              {idx > 0 && <span className="text-neutral-700">/</span>}
+              {idx > 0 && <span className="text-neutral-300 dark:text-neutral-700">/</span>}
               <button
                 onClick={() => {
                   setUrlInput(sample.url);
                   handleAnalyze(sample.url);
                 }}
-                className="hover:text-white transition-colors cursor-pointer text-[11px]"
+                className="hover:text-neutral-950 dark:hover:text-white transition-colors cursor-pointer text-[11px]"
               >
                 {sample.label.split(':')[0]}
               </button>
@@ -289,14 +287,14 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
       {/* Metadata Preview & Settings Configuration */}
       {metadata && (
         <div className="max-w-4xl mx-auto space-y-5 animate-in fade-in duration-150">
-          {/* Metadata Card - Minimalist Hairline Border */}
-          <div className="p-4 rounded-md bg-neutral-900/60 border border-neutral-800 flex flex-col md:flex-row gap-4 items-start md:items-center">
-            <div className="relative w-full md:w-44 h-24 rounded bg-neutral-950 overflow-hidden shrink-0 border border-neutral-800">
+          {/* Metadata Card */}
+          <div className="p-4 rounded-md bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 shadow-xs flex flex-col md:flex-row gap-4 items-start md:items-center">
+            <div className="relative w-full md:w-44 h-24 rounded bg-neutral-100 dark:bg-neutral-950 overflow-hidden shrink-0 border border-neutral-200 dark:border-neutral-800">
               <img
                 src={metadata.thumbnail}
                 alt={metadata.title}
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover grayscale-[20%]"
+                className="w-full h-full object-cover"
               />
               <div className="absolute bottom-1 right-1 px-1 py-0.2 rounded bg-black/80 font-mono text-[9px] text-white">
                 {formatDurationSimple(metadata.duration)}
@@ -304,25 +302,25 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
             </div>
 
             <div className="flex-1 min-w-0 space-y-1.5">
-              <div className="flex items-center gap-2 text-xs text-neutral-400">
-                <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-300">
+              <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-800 dark:text-neutral-300 font-semibold">
                   {metadata.platform}
                 </span>
                 <span>·</span>
-                <span className="text-neutral-400">{metadata.author}</span>
+                <span className="text-neutral-700 dark:text-neutral-400 font-medium">{metadata.author}</span>
                 {metadata.views && (
                   <>
                     <span>·</span>
-                    <span className="font-mono text-[11px] text-neutral-400">{metadata.views}</span>
+                    <span className="font-mono text-[11px] text-neutral-500 dark:text-neutral-400">{metadata.views}</span>
                   </>
                 )}
               </div>
 
-              <h2 className="text-xs font-semibold text-neutral-100 line-clamp-2 leading-relaxed">
+              <h2 className="text-xs font-bold text-neutral-900 dark:text-neutral-100 line-clamp-2 leading-relaxed">
                 {metadata.title}
               </h2>
 
-              <div className="flex items-center gap-2 text-[11px] text-neutral-400 font-mono pt-0.5">
+              <div className="flex items-center gap-2 text-[11px] text-neutral-500 dark:text-neutral-400 font-mono pt-0.5">
                 <span>{metadata.sourceQuality}</span>
                 <span>·</span>
                 <span>~{metadata.filesizeApprox} MB</span>
@@ -333,10 +331,10 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
             <div className="shrink-0">
               <button
                 onClick={() => onOpenTrimmerForMedia(metadata, trim)}
-                className={`px-3 py-1.5 rounded border text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded border text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
                   trim.enabled
-                    ? 'border-neutral-400 bg-neutral-800 text-white'
-                    : 'border-neutral-800 bg-neutral-900 hover:border-neutral-700 text-neutral-300'
+                    ? 'border-neutral-900 bg-neutral-900 text-white dark:border-neutral-400 dark:bg-neutral-800 dark:text-white'
+                    : 'border-neutral-300 bg-neutral-50 hover:bg-neutral-100 text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-700'
                 }`}
               >
                 <Scissors className="w-3 h-3" />
@@ -349,20 +347,20 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
             </div>
           </div>
 
-          {/* Format & Quality Configuration - Strict Minimalist Layout */}
-          <div className="p-4 rounded-md bg-neutral-900/60 border border-neutral-800 space-y-4">
+          {/* Format & Quality Configuration */}
+          <div className="p-4 rounded-md bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-4">
             {/* Format Segment Switch */}
-            <div className="flex items-center justify-between border-b border-neutral-800/80 pb-3">
-              <div className="flex items-center gap-1 p-0.5 bg-neutral-950 rounded border border-neutral-850">
+            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800/80 pb-3">
+              <div className="flex items-center gap-1 p-0.5 bg-neutral-100 dark:bg-neutral-950 rounded border border-neutral-200 dark:border-neutral-850">
                 <button
                   onClick={() => {
                     setMediaType('video');
                     setSelectedFormat('MP4');
                   }}
-                  className={`px-3 py-1 text-xs font-medium rounded transition-colors cursor-pointer ${
+                  className={`px-3 py-1 text-xs font-semibold rounded transition-colors cursor-pointer ${
                     mediaType === 'video'
-                      ? 'bg-neutral-100 text-neutral-950 font-semibold'
-                      : 'text-neutral-400 hover:text-neutral-200'
+                      ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950 shadow-2xs'
+                      : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
                   }`}
                 >
                   Видео (MP4)
@@ -372,26 +370,26 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                     setMediaType('audio');
                     if (selectedFormat === 'MP4') setSelectedFormat('MP3');
                   }}
-                  className={`px-3 py-1 text-xs font-medium rounded transition-colors cursor-pointer ${
+                  className={`px-3 py-1 text-xs font-semibold rounded transition-colors cursor-pointer ${
                     mediaType === 'audio'
-                      ? 'bg-neutral-100 text-neutral-950 font-semibold'
-                      : 'text-neutral-400 hover:text-neutral-200'
+                      ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950 shadow-2xs'
+                      : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
                   }`}
                 >
                   Аудио (MP3, WAV, FLAC, AAC)
                 </button>
               </div>
 
-              <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-mono text-neutral-400">
+              <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
                 <span>Каталог:</span>
-                <span className="text-neutral-300 truncate max-w-[220px]">{currentFolder}</span>
+                <span className="text-neutral-800 dark:text-neutral-300 font-medium truncate max-w-[220px]">{currentFolder}</span>
               </div>
             </div>
 
             {/* Video Settings */}
             {mediaType === 'video' ? (
               <div className="space-y-3">
-                <div className="text-xs font-medium text-neutral-300">
+                <div className="text-xs font-bold text-neutral-800 dark:text-neutral-300">
                   Разрешение видеопотока:
                 </div>
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
@@ -408,25 +406,25 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                       onClick={() => setSelectedResolution(item.res)}
                       className={`p-2 rounded border text-left transition-colors cursor-pointer ${
                         selectedResolution === item.res
-                          ? 'bg-neutral-100 text-neutral-950 border-neutral-100 font-semibold'
-                          : 'bg-neutral-950/60 border-neutral-800 text-neutral-300 hover:border-neutral-700'
+                          ? 'bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-950 dark:border-neutral-100 font-bold shadow-2xs'
+                          : 'bg-neutral-50 border-neutral-200 text-neutral-800 hover:bg-neutral-100 hover:border-neutral-300 dark:bg-neutral-950/60 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-700'
                       }`}
                     >
                       <div className="font-mono text-xs font-bold">{item.label}</div>
-                      <div className={`text-[10px] ${selectedResolution === item.res ? 'text-neutral-700' : 'text-neutral-400'}`}>
+                      <div className={`text-[10px] ${selectedResolution === item.res ? 'text-neutral-300 dark:text-neutral-700 font-medium' : 'text-neutral-500 dark:text-neutral-400'}`}>
                         {item.desc}
                       </div>
                     </button>
                   ))}
                 </div>
 
-                <div className="flex items-center gap-5 pt-1 text-xs text-neutral-300">
+                <div className="flex items-center gap-5 pt-1 text-xs text-neutral-700 dark:text-neutral-300 font-medium">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={fps60}
                       onChange={(e) => setFps60(e.target.checked)}
-                      className="rounded border-neutral-700 text-neutral-100 focus:ring-0"
+                      className="rounded border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-0"
                     />
                     <span>Плавность 60 FPS</span>
                   </label>
@@ -436,7 +434,7 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                       type="checkbox"
                       checked={normalizeAudio}
                       onChange={(e) => setNormalizeAudio(e.target.checked)}
-                      className="rounded border-neutral-700 text-neutral-100 focus:ring-0"
+                      className="rounded border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-0"
                     />
                     <span>Нормализация звука</span>
                   </label>
@@ -445,7 +443,7 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
             ) : (
               /* Audio Settings */
               <div className="space-y-3">
-                <div className="text-xs font-medium text-neutral-300">
+                <div className="text-xs font-bold text-neutral-800 dark:text-neutral-300">
                   Формат кодирования:
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -460,19 +458,19 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                       onClick={() => setSelectedFormat(item.fmt)}
                       className={`p-2 rounded border text-left transition-colors cursor-pointer ${
                         selectedFormat === item.fmt
-                          ? 'bg-neutral-100 text-neutral-950 border-neutral-100 font-semibold'
-                          : 'bg-neutral-950/60 border-neutral-800 text-neutral-300 hover:border-neutral-700'
+                          ? 'bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-950 dark:border-neutral-100 font-bold shadow-2xs'
+                          : 'bg-neutral-50 border-neutral-200 text-neutral-800 hover:bg-neutral-100 hover:border-neutral-300 dark:bg-neutral-950/60 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-700'
                       }`}
                     >
                       <div className="font-mono text-xs font-bold">{item.label}</div>
-                      <div className={`text-[10px] ${selectedFormat === item.fmt ? 'text-neutral-700' : 'text-neutral-400'}`}>
+                      <div className={`text-[10px] ${selectedFormat === item.fmt ? 'text-neutral-300 dark:text-neutral-700 font-medium' : 'text-neutral-500 dark:text-neutral-400'}`}>
                         {item.desc}
                       </div>
                     </button>
                   ))}
                 </div>
 
-                <div className="text-xs font-medium text-neutral-300 pt-1">
+                <div className="text-xs font-bold text-neutral-800 dark:text-neutral-300 pt-1">
                   Битрейт звукового потока:
                 </div>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -488,12 +486,12 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                       onClick={() => setSelectedBitrate(item.rate)}
                       className={`p-2 rounded border text-center transition-colors cursor-pointer ${
                         selectedBitrate === item.rate
-                          ? 'bg-neutral-100 text-neutral-950 border-neutral-100 font-semibold'
-                          : 'bg-neutral-950/60 border-neutral-800 text-neutral-300 hover:border-neutral-700'
+                          ? 'bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-950 dark:border-neutral-100 font-bold shadow-2xs'
+                          : 'bg-neutral-50 border-neutral-200 text-neutral-800 hover:bg-neutral-100 hover:border-neutral-300 dark:bg-neutral-950/60 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-700'
                       }`}
                     >
                       <div className="font-mono text-xs font-bold">{item.label}</div>
-                      <div className={`text-[10px] ${selectedBitrate === item.rate ? 'text-neutral-700' : 'text-neutral-400'}`}>
+                      <div className={`text-[10px] ${selectedBitrate === item.rate ? 'text-neutral-300 dark:text-neutral-700 font-medium' : 'text-neutral-500 dark:text-neutral-400'}`}>
                         {item.badge}
                       </div>
                     </button>
@@ -502,11 +500,11 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
                   <div>
-                    <span className="text-neutral-400 block mb-1">Частота:</span>
+                    <span className="text-neutral-700 dark:text-neutral-400 block mb-1 font-medium">Частота:</span>
                     <select
                       value={sampleRate}
                       onChange={(e) => setSampleRate(e.target.value as '44100' | '48000' | '96000')}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded p-1.5 text-neutral-200 font-mono text-xs"
+                      className="w-full bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded p-1.5 text-neutral-900 dark:text-neutral-200 font-mono text-xs focus:outline-none"
                     >
                       <option value="44100">44.1 kHz (CD)</option>
                       <option value="48000">48.0 kHz (Studio)</option>
@@ -515,11 +513,11 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                   </div>
 
                   <div>
-                    <span className="text-neutral-400 block mb-1">Каналы:</span>
+                    <span className="text-neutral-700 dark:text-neutral-400 block mb-1 font-medium">Каналы:</span>
                     <select
                       value={audioChannels}
                       onChange={(e) => setAudioChannels(e.target.value as 'stereo' | 'mono')}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded p-1.5 text-neutral-200 font-mono text-xs"
+                      className="w-full bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded p-1.5 text-neutral-900 dark:text-neutral-200 font-mono text-xs focus:outline-none"
                     >
                       <option value="stereo">Стерео 2.0</option>
                       <option value="mono">Моно 1.0</option>
@@ -527,12 +525,12 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                   </div>
 
                   <div className="flex items-end pb-1.5">
-                    <label className="flex items-center gap-2 cursor-pointer text-neutral-300">
+                    <label className="flex items-center gap-2 cursor-pointer text-neutral-800 dark:text-neutral-300 font-medium">
                       <input
                         type="checkbox"
                         checked={normalizeAudio}
                         onChange={(e) => setNormalizeAudio(e.target.checked)}
-                        className="rounded border-neutral-700 text-neutral-100 focus:ring-0"
+                        className="rounded border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-0"
                       />
                       <span>Нормализация +3 dB</span>
                     </label>
@@ -542,11 +540,11 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
             )}
 
             {/* Execute Bar */}
-            <div className="pt-3 border-t border-neutral-800 flex items-center justify-between flex-wrap gap-3">
-              <div className="text-xs text-neutral-400 font-mono">
+            <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 flex items-center justify-between flex-wrap gap-3">
+              <div className="text-xs text-neutral-700 dark:text-neutral-400 font-mono font-medium">
                 {selectedFormat} · {mediaType === 'video' ? selectedResolution : selectedBitrate}
                 {trim.enabled && (
-                  <span className="text-neutral-300 ml-1">
+                  <span className="text-neutral-900 dark:text-neutral-300 ml-1 font-semibold">
                     ({formatDurationSimple(trim.end - trim.start)})
                   </span>
                 )}
@@ -555,7 +553,7 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
               <button
                 onClick={handleStartConversion}
                 disabled={task?.status === 'downloading' || task?.status === 'converting'}
-                className="px-5 py-2 rounded bg-white hover:bg-neutral-200 text-neutral-950 font-semibold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-40"
+                className="px-5 py-2 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-40 shadow-xs"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Конвертировать и сохранить</span>
@@ -565,17 +563,17 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
 
           {/* Active Conversion Progress Card */}
           {task && (
-            <div className="p-4 rounded-md bg-neutral-900 border border-neutral-800 space-y-2.5">
+            <div className="p-4 rounded-md bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-2.5">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   {task.status === 'completed' ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                   ) : task.status === 'error' ? (
-                    <span className="text-red-400">Ошибка</span>
+                    <span className="text-red-600 dark:text-red-400 font-semibold">Ошибка</span>
                   ) : (
-                    <Loader2 className="w-3.5 h-3.5 text-neutral-300 animate-spin" />
+                    <Loader2 className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300 animate-spin" />
                   )}
-                  <span className="text-neutral-200">
+                  <span className="text-neutral-900 dark:text-neutral-200 font-medium">
                     {task.status === 'downloading' && 'Загрузка потока с медиасервера...'}
                     {task.status === 'converting' && `Ресемплирование в ${task.format} (${task.resolution || task.bitrate})...`}
                     {task.status === 'completed' && 'Транскодирование завершено. Файл сохранен.'}
@@ -583,21 +581,21 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                   </span>
                 </div>
 
-                <div className="flex items-center gap-3 font-mono text-[11px] text-neutral-400">
+                <div className="flex items-center gap-3 font-mono text-[11px] text-neutral-500 dark:text-neutral-400">
                   {task.status !== 'completed' && <span>{task.downloadSpeed}</span>}
-                  <span className="font-bold text-white">{task.progress}%</span>
+                  <span className="font-bold text-neutral-900 dark:text-white">{task.progress}%</span>
                 </div>
               </div>
 
-              {/* Minimal Linear Progress bar */}
-              <div className="w-full bg-neutral-800 h-1 rounded-full overflow-hidden">
+              {/* Progress bar */}
+              <div className="w-full bg-neutral-200 dark:bg-neutral-800 h-1 rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all duration-150 ${
                     task.status === 'completed'
-                      ? 'bg-emerald-500'
+                      ? 'bg-emerald-600 dark:bg-emerald-500'
                       : task.status === 'error'
-                      ? 'bg-red-500'
-                      : 'bg-white'
+                      ? 'bg-red-600 dark:bg-red-500'
+                      : 'bg-neutral-900 dark:bg-white'
                   }`}
                   style={{ width: `${task.progress}%` }}
                 />
@@ -605,15 +603,15 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
 
               {/* Completed Action Strip */}
               {task.status === 'completed' && lastFinishedItem && (
-                <div className="pt-2 flex items-center justify-between flex-wrap gap-2 text-xs border-t border-neutral-800">
-                  <div className="text-neutral-400 flex items-center gap-1.5 font-mono text-[11px]">
-                    <span className="text-neutral-300">{task.outputFilePath}</span>
+                <div className="pt-2 flex items-center justify-between flex-wrap gap-2 text-xs border-t border-neutral-200 dark:border-neutral-800">
+                  <div className="text-neutral-600 dark:text-neutral-400 flex items-center gap-1.5 font-mono text-[11px]">
+                    <span className="text-neutral-900 dark:text-neutral-300 font-medium">{task.outputFilePath}</span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => onOpenMediaPlayer(lastFinishedItem)}
-                      className="px-2.5 py-1 rounded bg-neutral-100 hover:bg-white text-neutral-950 font-medium text-xs flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-neutral-100 dark:hover:bg-white dark:text-neutral-950 font-semibold text-xs flex items-center gap-1 cursor-pointer shadow-xs"
                     >
                       <Play className="w-3 h-3 fill-current" />
                       <span>Воспроизвести</span>
@@ -621,7 +619,7 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
 
                     <button
                       onClick={onOpenExplorer}
-                      className="px-2.5 py-1 rounded border border-neutral-700 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1 rounded border border-neutral-300 bg-white hover:bg-neutral-100 text-neutral-800 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200 text-xs flex items-center gap-1 cursor-pointer"
                     >
                       <FolderOpen className="w-3 h-3" />
                       <span>В папке</span>

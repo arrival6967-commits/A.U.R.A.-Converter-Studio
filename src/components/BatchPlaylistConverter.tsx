@@ -257,39 +257,39 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
     <div className="flex-1 overflow-y-auto p-6 space-y-6">
       <div className="max-w-4xl mx-auto space-y-4">
         {/* Header */}
-        <div className="flex items-baseline justify-between border-b border-neutral-800 pb-3">
+        <div className="flex items-baseline justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
           <div>
-            <h1 className="text-base font-semibold text-white tracking-tight">
+            <h1 className="text-base font-bold text-neutral-900 dark:text-white tracking-tight">
               Пакетная очередь и плейлисты
             </h1>
-            <p className="text-xs text-neutral-400 mt-0.5">
+            <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-0.5">
               Массовая выгрузка плейлистов или списка ссылок с автоматическим транскодированием.
             </p>
           </div>
-          <div className="text-[11px] font-mono text-neutral-400">
+          <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
             A.U.R.A. Batch Dispatcher
           </div>
         </div>
 
         {/* Minimal Input Bar */}
-        <div className="p-3.5 rounded-md bg-neutral-900/60 border border-neutral-800 space-y-2.5">
+        <div className="p-3.5 rounded-md bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 shadow-2xs space-y-2.5">
           <textarea
             rows={2}
             value={playlistInput}
             onChange={(e) => setPlaylistInput(e.target.value)}
             placeholder="Вставьте ссылку на плейлист YouTube или список ссылок (каждая с новой строки)..."
-            className="w-full bg-neutral-950 border border-neutral-800 rounded p-2 text-xs text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-600 font-mono resize-none"
+            className="w-full bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded p-2 text-xs text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 font-mono resize-none"
           />
 
           <div className="flex items-center justify-between flex-wrap gap-2 pt-0.5">
-            <div className="flex items-center gap-2 text-xs text-neutral-400">
-              <span className="text-[11px] text-neutral-400">Шаблоны:</span>
+            <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+              <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">Шаблоны:</span>
               {SAMPLE_PLAYLISTS.map((sample, idx) => (
                 <React.Fragment key={sample.name}>
-                  {idx > 0 && <span className="text-neutral-700">/</span>}
+                  {idx > 0 && <span className="text-neutral-300 dark:text-neutral-700">/</span>}
                   <button
                     onClick={() => handleLoadSample(sample)}
-                    className="hover:text-white transition-colors cursor-pointer text-[11px]"
+                    className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer text-[11px]"
                   >
                     {sample.name.split(':')[0]} ({sample.itemsCount})
                   </button>
@@ -300,7 +300,7 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
             <button
               onClick={handleParseCustom}
               disabled={isParsing || !playlistInput.trim()}
-              className="px-3 py-1.5 rounded bg-white hover:bg-neutral-200 disabled:opacity-40 text-neutral-950 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-40 shadow-xs"
             >
               {isParsing ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
               <span>Загрузить список</span>
@@ -309,24 +309,24 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
         </div>
 
         {/* Queue Grid */}
-        <div className="p-4 rounded-md bg-neutral-900/60 border border-neutral-800 space-y-3">
-          <div className="flex items-center justify-between flex-wrap gap-3 border-b border-neutral-800 pb-3">
+        <div className="p-4 rounded-md bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-3 border-b border-neutral-200 dark:border-neutral-800 pb-3">
             <div>
-              <div className="text-xs font-semibold text-white">{playlistTitle}</div>
-              <div className="text-[11px] font-mono text-neutral-400 mt-0.5">
-                Выбрано: {selectedCount} из {items.length} · Готово: {completedCount}
+              <div className="text-xs font-bold text-neutral-900 dark:text-white">{playlistTitle}</div>
+              <div className="text-[11px] font-mono text-neutral-600 dark:text-neutral-400 mt-0.5">
+                Выбрано: <span className="font-bold text-neutral-900 dark:text-white">{selectedCount}</span> из {items.length} · Готово: <span className="font-bold text-emerald-600 dark:text-emerald-400">{completedCount}</span>
               </div>
             </div>
 
             {/* Global Format Selector */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 bg-neutral-950 p-0.5 rounded border border-neutral-850">
+              <div className="flex items-center gap-1 bg-neutral-100 dark:bg-neutral-950 p-0.5 rounded border border-neutral-200 dark:border-neutral-850">
                 {(['MP3', 'WAV', 'FLAC', 'AAC', 'MP4'] as OutputFormat[]).map((fmt) => (
                   <button
                     key={fmt}
                     onClick={() => handleApplyGlobalFormat(fmt)}
-                    className={`px-2 py-0.5 rounded text-xs font-medium cursor-pointer ${
-                      globalFormat === fmt ? 'bg-neutral-100 text-neutral-950 font-semibold' : 'text-neutral-400 hover:text-white'
+                    className={`px-2 py-0.5 rounded text-xs font-semibold cursor-pointer ${
+                      globalFormat === fmt ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950' : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white'
                     }`}
                   >
                     {fmt}
@@ -342,7 +342,7 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
                     setGlobalResolution(r);
                     setItems(prev => prev.map(it => ({ ...it, resolution: r })));
                   }}
-                  className="bg-neutral-950 border border-neutral-800 text-neutral-200 text-xs rounded px-2 py-1 font-mono focus:outline-none"
+                  className="bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200 text-xs rounded px-2 py-1 font-mono focus:outline-none"
                 >
                   <option value="2160p">4K</option>
                   <option value="1080p">1080p</option>
@@ -356,7 +356,7 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
                     setGlobalBitrate(b);
                     setItems(prev => prev.map(it => ({ ...it, bitrate: b })));
                   }}
-                  className="bg-neutral-950 border border-neutral-800 text-neutral-200 text-xs rounded px-2 py-1 font-mono focus:outline-none"
+                  className="bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200 text-xs rounded px-2 py-1 font-mono focus:outline-none"
                 >
                   <option value="320k">320k</option>
                   <option value="256k">256k</option>
@@ -367,24 +367,24 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-neutral-400">
-            <div className="flex items-center gap-3">
-              <button onClick={() => handleToggleSelectAll(true)} className="hover:text-white cursor-pointer">Выбрать все</button>
-              <span>/</span>
-              <button onClick={() => handleToggleSelectAll(false)} className="hover:text-white cursor-pointer">Снять все</button>
+          <div className="flex items-center justify-between text-xs text-neutral-600 dark:text-neutral-400">
+            <div className="flex items-center gap-3 font-medium">
+              <button onClick={() => handleToggleSelectAll(true)} className="hover:text-neutral-950 dark:hover:text-white cursor-pointer">Выбрать все</button>
+              <span className="text-neutral-300 dark:text-neutral-700">/</span>
+              <button onClick={() => handleToggleSelectAll(false)} className="hover:text-neutral-950 dark:hover:text-white cursor-pointer">Снять все</button>
             </div>
-            <div className="font-mono text-[11px] text-neutral-400">
+            <div className="font-mono text-[11px] text-neutral-500 dark:text-neutral-400">
               {currentFolder}
             </div>
           </div>
 
           {/* Items Table */}
-          <div className="divide-y divide-neutral-850 border border-neutral-800 rounded overflow-hidden max-h-[350px] overflow-y-auto">
+          <div className="divide-y divide-neutral-200 dark:divide-neutral-850 border border-neutral-200 dark:border-neutral-800 rounded overflow-hidden max-h-[350px] overflow-y-auto">
             {items.map((item, idx) => (
               <div
                 key={item.id}
                 className={`p-2.5 flex items-center justify-between gap-3 text-xs transition-colors ${
-                  item.selected ? 'bg-neutral-900/40' : 'bg-neutral-950/40 opacity-50'
+                  item.selected ? 'bg-neutral-50/80 dark:bg-neutral-900/40' : 'bg-neutral-100/50 dark:bg-neutral-950/40 opacity-60'
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -395,11 +395,11 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
                       const checked = e.target.checked;
                       setItems(prev => prev.map((it, i) => i === idx ? { ...it, selected: checked } : it));
                     }}
-                    className="rounded border-neutral-700 text-neutral-100 focus:ring-0 cursor-pointer"
+                    className="rounded border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 focus:ring-0 cursor-pointer"
                   />
                   <div className="min-w-0 flex-1">
-                    <div className="font-medium text-neutral-200 truncate">{item.title}</div>
-                    <div className="text-[11px] font-mono text-neutral-400 mt-0.5">
+                    <div className="font-semibold text-neutral-900 dark:text-neutral-200 truncate">{item.title}</div>
+                    <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 mt-0.5">
                       {item.author} · {formatDurationSimple(item.duration)}
                     </div>
                   </div>
@@ -409,26 +409,26 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
                   <div className="w-28">
                     {item.status === 'downloading' || item.status === 'converting' ? (
                       <div className="space-y-1">
-                        <div className="flex justify-between text-[10px] font-mono text-neutral-300">
+                        <div className="flex justify-between text-[10px] font-mono text-neutral-700 dark:text-neutral-300">
                           <span>{item.status === 'downloading' ? 'Поток...' : 'Сжатие...'}</span>
                           <span>{item.progress}%</span>
                         </div>
-                        <div className="w-full bg-neutral-800 h-1 rounded-full overflow-hidden">
-                          <div className="bg-white h-full" style={{ width: `${item.progress}%` }} />
+                        <div className="w-full bg-neutral-200 dark:bg-neutral-800 h-1 rounded-full overflow-hidden">
+                          <div className="bg-neutral-900 dark:bg-white h-full" style={{ width: `${item.progress}%` }} />
                         </div>
                       </div>
                     ) : item.status === 'completed' ? (
-                      <div className="text-emerald-400 text-[11px] font-mono">
+                      <div className="text-emerald-600 dark:text-emerald-400 text-[11px] font-mono font-medium">
                         Готово ({item.fileSizeText})
                       </div>
                     ) : item.status === 'error' ? (
-                      <div className="text-red-400 text-[11px] font-mono">Сбой</div>
+                      <div className="text-red-600 dark:text-red-400 text-[11px] font-mono font-medium">Сбой</div>
                     ) : (
-                      <span className="text-[11px] font-mono text-neutral-400">Ожидание</span>
+                      <span className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">Ожидание</span>
                     )}
                   </div>
 
-                  <span className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-300">
+                  <span className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 font-medium">
                     {item.format}
                   </span>
                 </div>
@@ -440,7 +440,7 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
           <div className="pt-2 flex items-center justify-between flex-wrap gap-2">
             <button
               onClick={onOpenExplorer}
-              className="text-neutral-400 hover:text-white text-xs cursor-pointer font-mono"
+              className="text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white text-xs cursor-pointer font-mono font-medium"
             >
               Открыть каталог загрузок
             </button>
@@ -448,7 +448,7 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
             <button
               onClick={handleStartBatchQueue}
               disabled={isQueueRunning || selectedCount === 0}
-              className="px-4 py-1.5 rounded bg-white hover:bg-neutral-200 disabled:opacity-40 text-neutral-950 font-semibold text-xs flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-40"
             >
               <Download className="w-3.5 h-3.5" />
               <span>

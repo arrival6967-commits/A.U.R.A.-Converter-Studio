@@ -245,18 +245,18 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
     <div className="flex-1 overflow-y-auto p-6 space-y-6">
       <div className="max-w-4xl mx-auto space-y-4">
         {/* Strict Header */}
-        <div className="flex items-baseline justify-between border-b border-neutral-800 pb-3 flex-wrap gap-2">
+        <div className="flex items-baseline justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3 flex-wrap gap-2">
           <div>
-            <h1 className="text-base font-semibold text-white tracking-tight">
+            <h1 className="text-base font-bold text-neutral-900 dark:text-white tracking-tight">
               Обрезка медиапотока
             </h1>
-            <p className="text-xs text-neutral-400 mt-0.5">
+            <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-0.5">
               Прецизионное выделение интервала с миллисекундным шагом.
             </p>
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-neutral-400 font-mono text-[11px]">Файл:</span>
+            <span className="text-neutral-500 dark:text-neutral-400 font-mono text-[11px]">Файл:</span>
             <select
               value={media.url}
               onChange={(e) => {
@@ -281,7 +281,7 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
                   setCurrentTime(10);
                 }
               }}
-              className="bg-neutral-900 border border-neutral-800 text-neutral-300 text-xs rounded px-2 py-1 font-mono focus:outline-none"
+              className="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 text-neutral-800 dark:text-neutral-300 text-xs rounded px-2 py-1 font-mono focus:outline-none"
             >
               {SAMPLE_URLS.map(s => (
                 <option key={s.url} value={s.url}>
@@ -293,17 +293,17 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
         </div>
 
         {/* Media Snippet Bar */}
-        <div className="p-3 rounded-md bg-neutral-900/60 border border-neutral-800 flex items-center justify-between gap-4">
+        <div className="p-3 rounded-md bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 shadow-2xs flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <img
               src={media.thumbnail}
               alt={media.title}
               referrerPolicy="no-referrer"
-              className="w-14 h-10 rounded object-cover border border-neutral-800 shrink-0"
+              className="w-14 h-10 rounded object-cover border border-neutral-200 dark:border-neutral-800 shrink-0"
             />
             <div className="min-w-0">
-              <div className="text-xs font-medium text-white truncate">{media.title}</div>
-              <div className="text-[11px] font-mono text-neutral-400 mt-0.5">
+              <div className="text-xs font-bold text-neutral-900 dark:text-white truncate">{media.title}</div>
+              <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 mt-0.5">
                 {formatDurationSimple(selectedDuration)} из {formatDurationSimple(duration)} · {formatTime(startTime)} → {formatTime(endTime)}
               </div>
             </div>
@@ -311,7 +311,7 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
 
           <button
             onClick={togglePlay}
-            className="px-3 py-1.5 rounded bg-white hover:bg-neutral-200 text-neutral-950 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+            className="px-3 py-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-xs"
           >
             {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
             <span>{isPlaying ? 'Пауза' : 'Слушать'}</span>
@@ -319,15 +319,15 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
         </div>
 
         {/* Waveform Canvas */}
-        <div className="p-4 rounded-md bg-neutral-900/60 border border-neutral-800 space-y-3">
-          <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400">
+        <div className="p-4 rounded-md bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-3">
+          <div className="flex items-center justify-between text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
             <span>00:00.0</span>
-            <span className="text-white">Позиция: {formatTime(currentTime)}</span>
+            <span className="text-neutral-900 dark:text-white font-bold">Позиция: {formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>
 
           {/* Minimalist Waveform Display */}
-          <div className="relative h-24 bg-neutral-950 rounded border border-neutral-850 flex items-end p-2 px-3 overflow-hidden">
+          <div className="relative h-24 bg-neutral-100 dark:bg-neutral-950 rounded border border-neutral-300 dark:border-neutral-850 flex items-end p-2 px-3 overflow-hidden">
             <div className="w-full h-full flex items-center justify-between gap-1 z-0">
               {waveformBars.map((height, i) => {
                 const barPercent = (i / totalBars) * 100;
@@ -337,8 +337,8 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
                     key={i}
                     className={`w-1 rounded-xs transition-colors duration-100 ${
                       isInSelectedRange
-                        ? 'bg-neutral-200'
-                        : 'bg-neutral-800'
+                        ? 'bg-neutral-900 dark:bg-neutral-200'
+                        : 'bg-neutral-300 dark:bg-neutral-800'
                     }`}
                     style={{ height: `${height}%` }}
                   />
@@ -348,7 +348,7 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
 
             {/* Selection overlay */}
             <div
-              className="absolute top-0 bottom-0 bg-neutral-500/10 border-x border-neutral-400 pointer-events-none z-10"
+              className="absolute top-0 bottom-0 bg-neutral-900/10 dark:bg-neutral-500/10 border-x border-neutral-900 dark:border-neutral-400 pointer-events-none z-10"
               style={{
                 left: `${startPercent}%`,
                 width: `${Math.max(1, endPercent - startPercent)}%`,
@@ -357,17 +357,17 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
 
             {/* Playhead */}
             <div
-              className="absolute top-0 bottom-0 w-0.5 bg-white z-20 pointer-events-none"
+              className="absolute top-0 bottom-0 w-0.5 bg-neutral-950 dark:bg-white z-20 pointer-events-none"
               style={{ left: `${playheadPercent}%` }}
             />
           </div>
 
           {/* Precision Slider Handles */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <div className="p-2.5 rounded bg-neutral-950/80 border border-neutral-800 space-y-1.5">
+            <div className="p-2.5 rounded bg-neutral-50 dark:bg-neutral-950/80 border border-neutral-200 dark:border-neutral-800 space-y-1.5">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-400">Старт:</span>
-                <span className="font-mono text-white font-medium">{formatTime(startTime)}</span>
+                <span className="text-neutral-600 dark:text-neutral-400 font-medium">Старт:</span>
+                <span className="font-mono text-neutral-900 dark:text-white font-bold">{formatTime(startTime)}</span>
               </div>
               <input
                 type="range"
@@ -382,22 +382,22 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
                 }}
                 className="w-full cursor-pointer"
               />
-              <div className="flex items-center justify-between text-[10px] font-mono text-neutral-400 pt-0.5">
+              <div className="flex items-center justify-between text-[10px] font-mono text-neutral-600 dark:text-neutral-400 pt-0.5">
                 <div className="flex gap-1">
-                  <button onClick={() => setStartTime(Math.max(0, startTime - 1))} className="px-1.5 py-0.5 bg-neutral-800 hover:bg-neutral-700 rounded text-neutral-300">-1s</button>
-                  <button onClick={() => setStartTime(Math.max(0, startTime - 0.1))} className="px-1.5 py-0.5 bg-neutral-800 hover:bg-neutral-700 rounded text-neutral-300">-0.1s</button>
+                  <button onClick={() => setStartTime(Math.max(0, startTime - 1))} className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded text-neutral-800 dark:text-neutral-300">-1s</button>
+                  <button onClick={() => setStartTime(Math.max(0, startTime - 0.1))} className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded text-neutral-800 dark:text-neutral-300">-0.1s</button>
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => setStartTime(Math.min(endTime - 1, startTime + 0.1))} className="px-1.5 py-0.5 bg-neutral-800 hover:bg-neutral-700 rounded text-neutral-300">+0.1s</button>
-                  <button onClick={() => setStartTime(Math.min(endTime - 1, startTime + 1))} className="px-1.5 py-0.5 bg-neutral-800 hover:bg-neutral-700 rounded text-neutral-300">+1s</button>
+                  <button onClick={() => setStartTime(Math.min(endTime - 1, startTime + 0.1))} className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded text-neutral-800 dark:text-neutral-300">+0.1s</button>
+                  <button onClick={() => setStartTime(Math.min(endTime - 1, startTime + 1))} className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded text-neutral-800 dark:text-neutral-300">+1s</button>
                 </div>
               </div>
             </div>
 
-            <div className="p-2.5 rounded bg-neutral-950/80 border border-neutral-800 space-y-1.5">
+            <div className="p-2.5 rounded bg-neutral-50 dark:bg-neutral-950/80 border border-neutral-200 dark:border-neutral-800 space-y-1.5">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-400">Финиш:</span>
-                <span className="font-mono text-white font-medium">{formatTime(endTime)}</span>
+                <span className="text-neutral-600 dark:text-neutral-400 font-medium">Финиш:</span>
+                <span className="font-mono text-neutral-900 dark:text-white font-bold">{formatTime(endTime)}</span>
               </div>
               <input
                 type="range"
@@ -412,46 +412,46 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
                 }}
                 className="w-full cursor-pointer"
               />
-              <div className="flex items-center justify-between text-[10px] font-mono text-neutral-400 pt-0.5">
+              <div className="flex items-center justify-between text-[10px] font-mono text-neutral-600 dark:text-neutral-400 pt-0.5">
                 <div className="flex gap-1">
-                  <button onClick={() => setEndTime(Math.max(startTime + 1, endTime - 1))} className="px-1.5 py-0.5 bg-neutral-800 hover:bg-neutral-700 rounded text-neutral-300">-1s</button>
-                  <button onClick={() => setEndTime(Math.max(startTime + 1, endTime - 0.1))} className="px-1.5 py-0.5 bg-neutral-800 hover:bg-neutral-700 rounded text-neutral-300">-0.1s</button>
+                  <button onClick={() => setEndTime(Math.max(startTime + 1, endTime - 1))} className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded text-neutral-800 dark:text-neutral-300">-1s</button>
+                  <button onClick={() => setEndTime(Math.max(startTime + 1, endTime - 0.1))} className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded text-neutral-800 dark:text-neutral-300">-0.1s</button>
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => setEndTime(Math.min(duration, endTime + 0.1))} className="px-1.5 py-0.5 bg-neutral-800 hover:bg-neutral-700 rounded text-neutral-300">+0.1s</button>
-                  <button onClick={() => setEndTime(Math.min(duration, endTime + 1))} className="px-1.5 py-0.5 bg-neutral-800 hover:bg-neutral-700 rounded text-neutral-300">+1s</button>
+                  <button onClick={() => setEndTime(Math.min(duration, endTime + 0.1))} className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded text-neutral-800 dark:text-neutral-300">+0.1s</button>
+                  <button onClick={() => setEndTime(Math.min(duration, endTime + 1))} className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded text-neutral-800 dark:text-neutral-300">+1s</button>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Clean Text Presets */}
-          <div className="flex items-center gap-2 text-xs text-neutral-400 pt-1">
-            <span className="text-[11px] text-neutral-400">Шаблоны:</span>
-            <button onClick={() => applyPreset('first30')} className="hover:text-white transition-colors cursor-pointer text-[11px]">30 сек</button>
-            <span className="text-neutral-700">/</span>
-            <button onClick={() => applyPreset('middle')} className="hover:text-white transition-colors cursor-pointer text-[11px]">Середина 40с</button>
-            <span className="text-neutral-700">/</span>
-            <button onClick={() => applyPreset('noIntro')} className="hover:text-white transition-colors cursor-pointer text-[11px]">Без интро</button>
-            <span className="text-neutral-700">/</span>
-            <button onClick={() => applyPreset('noOutro')} className="hover:text-white transition-colors cursor-pointer text-[11px]">Без аутро</button>
+          <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400 pt-1">
+            <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">Шаблоны:</span>
+            <button onClick={() => applyPreset('first30')} className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer text-[11px]">30 сек</button>
+            <span className="text-neutral-300 dark:text-neutral-700">/</span>
+            <button onClick={() => applyPreset('middle')} className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer text-[11px]">Середина 40с</button>
+            <span className="text-neutral-300 dark:text-neutral-700">/</span>
+            <button onClick={() => applyPreset('noIntro')} className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer text-[11px]">Без интро</button>
+            <span className="text-neutral-300 dark:text-neutral-700">/</span>
+            <button onClick={() => applyPreset('noOutro')} className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer text-[11px]">Без аутро</button>
           </div>
         </div>
 
         {/* Minimal Export Bar */}
-        <div className="p-3.5 rounded-md bg-neutral-900/60 border border-neutral-800 flex items-center justify-between flex-wrap gap-3">
-          <div className="text-xs text-neutral-300 font-mono">
+        <div className="p-3.5 rounded-md bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 shadow-2xs flex items-center justify-between flex-wrap gap-3">
+          <div className="text-xs text-neutral-800 dark:text-neutral-300 font-mono font-medium">
             Длина: {formatDurationSimple(selectedDuration)}
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 bg-neutral-950 p-0.5 rounded border border-neutral-850">
+            <div className="flex items-center gap-1 bg-neutral-100 dark:bg-neutral-950 p-0.5 rounded border border-neutral-200 dark:border-neutral-850">
               {(['MP3', 'WAV', 'FLAC', 'AAC', 'MP4'] as OutputFormat[]).map((fmt) => (
                 <button
                   key={fmt}
                   onClick={() => setFormat(fmt)}
-                  className={`px-2 py-0.5 rounded text-xs font-medium cursor-pointer ${
-                    format === fmt ? 'bg-neutral-100 text-neutral-950 font-semibold' : 'text-neutral-400 hover:text-white'
+                  className={`px-2 py-0.5 rounded text-xs font-semibold cursor-pointer ${
+                    format === fmt ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950' : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white'
                   }`}
                 >
                   {fmt}
@@ -463,7 +463,7 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
               <select
                 value={resolution}
                 onChange={(e) => setResolution(e.target.value as VideoResolution)}
-                className="bg-neutral-950 border border-neutral-800 text-neutral-200 text-xs rounded px-2 py-1 font-mono focus:outline-none"
+                className="bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200 text-xs rounded px-2 py-1 font-mono focus:outline-none"
               >
                 <option value="2160p">4K (2160p)</option>
                 <option value="1080p">1080p</option>
@@ -473,7 +473,7 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
               <select
                 value={bitrate}
                 onChange={(e) => setBitrate(e.target.value as AudioBitrate)}
-                className="bg-neutral-950 border border-neutral-800 text-neutral-200 text-xs rounded px-2 py-1 font-mono focus:outline-none"
+                className="bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200 text-xs rounded px-2 py-1 font-mono focus:outline-none"
               >
                 <option value="320k">320k</option>
                 <option value="256k">256k</option>
@@ -485,7 +485,7 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
             <button
               onClick={handleExportTrimmed}
               disabled={isExporting}
-              className="px-4 py-1.5 rounded bg-white hover:bg-neutral-200 text-neutral-950 font-semibold text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
+              className="px-4 py-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-40 shadow-xs"
             >
               <Download className="w-3.5 h-3.5" />
               <span>{isExporting ? 'Экспорт...' : 'Сохранить'}</span>
@@ -494,11 +494,11 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
         </div>
 
         {lastSavedItem && (
-          <div className="p-2.5 rounded bg-neutral-900 border border-neutral-700 text-xs flex items-center justify-between text-neutral-300">
-            <span className="font-mono">Фрагмент сохранен: {lastSavedItem.fileName}</span>
-            <div className="flex gap-2">
-              <button onClick={() => onOpenMediaPlayer(lastSavedItem)} className="text-white hover:underline">Воспроизвести</button>
-              <button onClick={onOpenExplorer} className="text-neutral-400 hover:text-white">Папка</button>
+          <div className="p-2.5 rounded bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 text-xs flex items-center justify-between text-neutral-800 dark:text-neutral-300 shadow-2xs">
+            <span className="font-mono font-medium">Фрагмент сохранен: {lastSavedItem.fileName}</span>
+            <div className="flex gap-2 font-semibold">
+              <button onClick={() => onOpenMediaPlayer(lastSavedItem)} className="text-neutral-900 dark:text-white hover:underline">Воспроизвести</button>
+              <button onClick={onOpenExplorer} className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">Папка</button>
             </div>
           </div>
         )}

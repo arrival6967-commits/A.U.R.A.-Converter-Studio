@@ -17,6 +17,7 @@ interface SidebarProps {
   batchCount: number;
   currentFolder: string;
   onOpenExplorer: () => void;
+  onOpenInstaller: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -26,6 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   batchCount,
   currentFolder,
   onOpenExplorer,
+  onOpenInstaller,
 }) => {
   const navItems: { id: NavTab; label: string; icon: React.ReactNode; badge?: number }[] = [
     {
@@ -58,9 +60,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="w-56 bg-neutral-950 border-r border-neutral-800/80 flex flex-col justify-between p-3 select-none shrink-0">
+    <aside className="w-56 bg-neutral-100 dark:bg-neutral-950 border-r border-neutral-200 dark:border-neutral-800/80 flex flex-col justify-between p-3 select-none shrink-0 transition-colors">
       <div className="space-y-1">
-        <div className="px-2 py-1.5 text-[10px] font-mono uppercase tracking-widest text-neutral-400">
+        <div className="px-2 py-1.5 text-[10px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
           Модули
         </div>
 
@@ -72,19 +74,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => onSelectTab(item.id)}
               className={`w-full flex items-center justify-between px-2.5 py-2 rounded text-xs transition-colors cursor-pointer ${
                 isActive
-                  ? 'bg-neutral-900 text-white font-medium border border-neutral-750'
-                  : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900/40 border border-transparent'
+                  ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-950 font-medium shadow-xs'
+                  : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60 dark:text-neutral-400 dark:hover:text-neutral-200 dark:hover:bg-neutral-900/40'
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <span className={isActive ? 'text-white' : 'text-neutral-400'}>
+                <span className={isActive ? 'text-white dark:text-neutral-950' : 'text-neutral-500 dark:text-neutral-400'}>
                   {item.icon}
                 </span>
                 <span className="whitespace-nowrap">{item.label}</span>
               </div>
 
               {item.badge !== undefined && (
-                <span className="px-1.5 py-0.2 rounded font-mono text-[10px] bg-neutral-800 text-neutral-300">
+                <span className="px-1.5 py-0.2 rounded font-mono text-[10px] bg-neutral-200 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300">
                   {item.badge}
                 </span>
               )}
@@ -94,26 +96,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Bottom Minimal Storage & Explorer Info */}
-      <div className="pt-3 border-t border-neutral-900 space-y-2">
-        <div className="p-2 rounded bg-neutral-900/50 border border-neutral-850 text-xs">
-          <div className="flex items-center justify-between text-neutral-400 mb-1">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">Каталог</span>
+      <div className="pt-3 border-t border-neutral-200 dark:border-neutral-900 space-y-2">
+        <div className="p-2 rounded bg-neutral-200/60 dark:bg-neutral-900/50 border border-neutral-300 dark:border-neutral-850 text-xs">
+          <div className="flex items-center justify-between text-neutral-600 dark:text-neutral-400 mb-1">
+            <span className="text-[10px] font-mono uppercase tracking-wider">Каталог</span>
             <button
               onClick={onOpenExplorer}
-              className="text-neutral-300 hover:text-white flex items-center gap-1 text-[10px] cursor-pointer"
+              className="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-white flex items-center gap-1 text-[10px] cursor-pointer font-medium"
             >
               <FolderOpen className="w-2.5 h-2.5" />
               <span>Папка</span>
             </button>
           </div>
-          <div className="font-mono text-[10px] text-neutral-300 truncate">
+          <div className="font-mono text-[10px] text-neutral-900 dark:text-neutral-300 truncate font-medium">
             {currentFolder.split('\\').pop() || 'Downloads'}
           </div>
         </div>
 
-        <div className="flex items-center justify-between text-[10px] text-neutral-400 px-1 font-mono">
-          <span>A.U.R.A. Engine</span>
-          <span>v2.8</span>
+        <button
+          onClick={onOpenInstaller}
+          className="w-full flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded bg-white hover:bg-neutral-200 border border-neutral-300 text-neutral-900 dark:bg-neutral-900 dark:hover:bg-neutral-850 dark:border-neutral-800 dark:text-neutral-200 text-xs font-medium cursor-pointer transition-colors shadow-2xs"
+        >
+          <span className="font-mono text-[11px] font-semibold">Установщик .EXE</span>
+        </button>
+
+        {/* Updated Company Name & Version 1.1 */}
+        <div className="flex items-center justify-between text-[10px] text-neutral-500 dark:text-neutral-400 px-1 font-mono">
+          <span className="truncate pr-1">The Godot Entertaiment Inc.</span>
+          <span className="shrink-0 font-bold">1.1</span>
         </div>
       </div>
     </aside>

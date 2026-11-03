@@ -13,6 +13,7 @@ import { DownloadHistory } from './components/DownloadHistory';
 import { SettingsModal } from './components/SettingsModal';
 import { MediaPlayerModal } from './components/MediaPlayerModal';
 import { WindowsExplorerModal } from './components/WindowsExplorerModal';
+import { InstallerModal } from './components/InstallerModal';
 import { 
   MediaMetadata, 
   TrimRange, 
@@ -61,6 +62,7 @@ export default function App() {
   // Modals state
   const [isExplorerOpen, setIsExplorerOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isInstallerOpen, setIsInstallerOpen] = useState(false);
   const [activePlayItem, setActivePlayItem] = useState<DownloadHistoryItem | null>(null);
 
   // Trimmer state transfer
@@ -191,6 +193,7 @@ export default function App() {
         currentFolder={currentFolder}
         onOpenFolderPicker={handlePickDirectory}
         onOpenExplorer={() => setIsExplorerOpen(true)}
+        onOpenInstaller={() => setIsInstallerOpen(true)}
         isDark={isDark}
         onToggleTheme={() => setIsDark(!isDark)}
         isMaximized={isMaximized}
@@ -206,14 +209,14 @@ export default function App() {
       {/* Main Desktop App Body */}
       {isMinimized ? (
         <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <div className="p-6 rounded bg-neutral-900 border border-neutral-800 text-center space-y-3 max-w-sm">
-            <div className="text-xs font-semibold text-white tracking-widest font-mono">
+          <div className="p-6 rounded bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-center space-y-3 max-w-sm shadow-sm">
+            <div className="text-xs font-bold text-neutral-900 dark:text-white tracking-widest font-mono">
               A.U.R.A. STUDIO
             </div>
-            <p className="text-xs text-neutral-400">Окно свернуто в фоновый режим Windows.</p>
+            <p className="text-xs text-neutral-600 dark:text-neutral-400">Окно свернуто в фоновый режим Windows.</p>
             <button
               onClick={() => setIsMinimized(false)}
-              className="px-4 py-1.5 rounded bg-white hover:bg-neutral-200 text-neutral-950 font-semibold text-xs cursor-pointer"
+              className="px-4 py-1.5 rounded bg-neutral-900 text-white hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-bold text-xs cursor-pointer shadow-xs"
             >
               Развернуть окно
             </button>
@@ -235,10 +238,11 @@ export default function App() {
             batchCount={0}
             currentFolder={currentFolder}
             onOpenExplorer={() => setIsExplorerOpen(true)}
+            onOpenInstaller={() => setIsInstallerOpen(true)}
           />
 
           {/* Active Viewport */}
-          <main className="flex-1 flex flex-col min-w-0 bg-slate-950/40 dark:bg-slate-950/90 relative">
+          <main className="flex-1 flex flex-col min-w-0 bg-neutral-100/60 dark:bg-neutral-950/90 relative transition-colors">
             {activeTab === 'single' && (
               <SingleConverter
                 currentFolder={currentFolder}
@@ -307,6 +311,12 @@ export default function App() {
       <MediaPlayerModal
         item={activePlayItem}
         onClose={() => setActivePlayItem(null)}
+      />
+
+      {/* Windows EXE Installer Setup Wizard Modal */}
+      <InstallerModal
+        isOpen={isInstallerOpen}
+        onClose={() => setIsInstallerOpen(false)}
       />
     </div>
   );

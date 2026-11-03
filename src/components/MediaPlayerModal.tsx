@@ -73,27 +73,27 @@ export const MediaPlayerModal: React.FC<MediaPlayerModalProps> = ({ item, onClos
   const numBars = 32;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
-      <div className="w-full max-w-xl bg-neutral-950 border border-neutral-800 rounded-md shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/85 flex items-center justify-center p-4">
+      <div className="w-full max-w-xl bg-white dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded-md shadow-2xl overflow-hidden flex flex-col">
         {/* Title bar */}
-        <div className="h-8 bg-neutral-900/90 border-b border-neutral-800 flex items-center justify-between px-3 text-xs select-none">
+        <div className="h-8 bg-neutral-100 dark:bg-neutral-900/90 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between px-3 text-xs select-none">
           <div className="flex items-center gap-2">
-            {isVideo ? <Film className="w-3.5 h-3.5 text-neutral-300" /> : <Music className="w-3.5 h-3.5 text-neutral-300" />}
-            <span className="font-medium text-white truncate max-w-md">
+            {isVideo ? <Film className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" /> : <Music className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />}
+            <span className="font-semibold text-neutral-900 dark:text-white truncate max-w-md">
               A.U.R.A. Player · {item.fileName}
             </span>
           </div>
 
           <button
             onClick={onClose}
-            className="w-5 h-5 flex items-center justify-center rounded text-neutral-400 hover:text-white cursor-pointer"
+            className="w-5 h-5 flex items-center justify-center rounded text-neutral-500 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
 
         {/* Viewport */}
-        <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
+        <div className="relative aspect-video bg-neutral-900 dark:bg-black flex items-center justify-center overflow-hidden">
           {isVideo && item.blobUrl ? (
             <video
               ref={videoRef}
@@ -126,7 +126,7 @@ export const MediaPlayerModal: React.FC<MediaPlayerModalProps> = ({ item, onClos
                   return (
                     <div
                       key={i}
-                      className="w-1 bg-neutral-300 rounded-full transition-all duration-75"
+                      className="w-1 bg-white dark:bg-neutral-300 rounded-full transition-all duration-75"
                       style={{ height: `${animHeight}px` }}
                     />
                   );
@@ -134,7 +134,7 @@ export const MediaPlayerModal: React.FC<MediaPlayerModalProps> = ({ item, onClos
               </div>
 
               <div>
-                <h3 className="font-semibold text-xs text-white max-w-sm mx-auto line-clamp-1">{item.title}</h3>
+                <h3 className="font-bold text-xs text-white max-w-sm mx-auto line-clamp-1">{item.title}</h3>
                 <div className="text-[11px] font-mono text-neutral-400 mt-0.5">{item.author}</div>
               </div>
             </div>
@@ -142,8 +142,8 @@ export const MediaPlayerModal: React.FC<MediaPlayerModalProps> = ({ item, onClos
         </div>
 
         {/* Controls */}
-        <div className="p-3 bg-neutral-950 border-t border-neutral-800 space-y-2">
-          <div className="flex items-center gap-2.5 text-xs font-mono text-neutral-400">
+        <div className="p-3 bg-neutral-50 dark:bg-neutral-950 border-t border-neutral-200 dark:border-neutral-800 space-y-2">
+          <div className="flex items-center gap-2.5 text-xs font-mono text-neutral-600 dark:text-neutral-400">
             <span>{formatDurationSimple(currentTime)}</span>
             <input
               type="range"
@@ -158,8 +158,8 @@ export const MediaPlayerModal: React.FC<MediaPlayerModalProps> = ({ item, onClos
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-[11px] font-mono text-neutral-400">
-              <span className="text-white font-bold">{item.format}</span>
+            <div className="flex items-center gap-2 text-[11px] font-mono text-neutral-600 dark:text-neutral-400 font-medium">
+              <span className="text-neutral-900 dark:text-white font-bold">{item.format}</span>
               <span>·</span>
               <span>{item.quality}</span>
             </div>
@@ -168,7 +168,7 @@ export const MediaPlayerModal: React.FC<MediaPlayerModalProps> = ({ item, onClos
               <button
                 onClick={() => setIsLooping(!isLooping)}
                 className={`p-1.5 rounded transition-colors cursor-pointer ${
-                  isLooping ? 'bg-neutral-800 text-white' : 'text-neutral-500 hover:text-white'
+                  isLooping ? 'bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
                 }`}
               >
                 <Repeat className="w-3.5 h-3.5" />
@@ -176,7 +176,7 @@ export const MediaPlayerModal: React.FC<MediaPlayerModalProps> = ({ item, onClos
 
               <button
                 onClick={togglePlay}
-                className="w-8 h-8 rounded-full bg-white hover:bg-neutral-200 text-neutral-950 flex items-center justify-center cursor-pointer"
+                className="w-8 h-8 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 flex items-center justify-center cursor-pointer shadow-xs"
               >
                 {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
               </button>
@@ -185,9 +185,9 @@ export const MediaPlayerModal: React.FC<MediaPlayerModalProps> = ({ item, onClos
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => handleVolumeChange(isMuted ? 0.85 : 0)}
-                className="text-neutral-400 hover:text-white cursor-pointer"
+                className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer"
               >
-                {isMuted || volume === 0 ? <VolumeX className="w-3.5 h-3.5 text-red-400" /> : <Volume2 className="w-3.5 h-3.5" />}
+                {isMuted || volume === 0 ? <VolumeX className="w-3.5 h-3.5 text-red-600 dark:text-red-400" /> : <Volume2 className="w-3.5 h-3.5" />}
               </button>
               <input
                 type="range"
