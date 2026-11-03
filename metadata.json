@@ -1,0 +1,6 @@
+{
+  "name": "OmniMedia Converter for Windows",
+  "description": "Мощное Windows-приложение для скачивания и переформатирования видео и музыки из Reddit, YouTube, TikTok и других платформ в MP4, MP3, WAV, FLAC, AAC с обрезкой, пакетной загрузкой и контролем качества.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
