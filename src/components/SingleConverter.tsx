@@ -15,7 +15,8 @@ import {
   ExternalLink,
   Loader2,
   Sliders,
-  FolderOpen
+  FolderOpen,
+  AlertCircle
 } from 'lucide-react';
 import { 
   MediaMetadata, 
@@ -32,7 +33,7 @@ import {
   getPlatformBadge, 
   formatDurationSimple 
 } from '../utils/mediaParser';
-import { createRealMediaBlob, saveMediaFileToFolder } from '../utils/mediaGenerator';
+import { createRealMediaBlob, saveMediaFileToFolder, getDirectDownloadUrl } from '../utils/mediaGenerator';
 
 interface SingleConverterProps {
   currentFolder: string;
@@ -40,6 +41,7 @@ interface SingleConverterProps {
   onOpenTrimmerForMedia: (metadata: MediaMetadata, currentTrim: TrimRange) => void;
   onAddHistoryItem: (item: DownloadHistoryItem) => void;
   onOpenMediaPlayer: (item: DownloadHistoryItem) => void;
+  onOpenSettings?: () => void;
 }
 
 export const SingleConverter: React.FC<SingleConverterProps> = ({
@@ -48,6 +50,7 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
   onOpenTrimmerForMedia,
   onAddHistoryItem,
   onOpenMediaPlayer,
+  onOpenSettings,
 }) => {
   const [urlInput, setUrlInput] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -88,7 +91,13 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
         enabled: false,
       });
 
-      if (data.platform === 'soundcloud') {
+      const lowerUrl = data.url.toLowerCase();
+      const isAudioSource = data.platform === 'soundcloud' || 
+        lowerUrl.endsWith('.mp3') || lowerUrl.endsWith('.wav') || 
+        lowerUrl.endsWith('.flac') || lowerUrl.endsWith('.aac') || 
+        lowerUrl.endsWith('.m4a') || lowerUrl.endsWith('.ogg');
+
+      if (isAudioSource) {
         setMediaType('audio');
         setSelectedFormat('MP3');
       } else {
@@ -158,7 +167,12 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
         metadata.author,
         selectedResolution,
         effectiveDuration,
-        selectedBitrate
+        selectedBitrate,
+        metadata.url,
+        trim,
+        sampleRate,
+        audioChannels,
+        normalizeAudio
       );
 
       clearInterval(progressInterval);
@@ -196,13 +210,13 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
       setLastFinishedItem(historyItem);
       onAddHistoryItem(historyItem);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       clearInterval(progressInterval);
       setTask(prev => prev ? {
         ...prev,
         status: 'error',
-        error: 'Сбой при транскодировании потока',
+        error: err?.message || 'Сбой при транскодировании потока',
       } : null);
     }
   };
@@ -294,6 +308,10 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                 src={metadata.thumbnail}
                 alt={metadata.title}
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src =
+                    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80';
+                }}
                 className="w-full h-full object-cover"
               />
               <div className="absolute bottom-1 right-1 px-1 py-0.2 rounded bg-black/80 font-mono text-[9px] text-white">
@@ -550,14 +568,26 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                 )}
               </div>
 
-              <button
-                onClick={handleStartConversion}
-                disabled={task?.status === 'downloading' || task?.status === 'converting'}
-                className="px-5 py-2 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-40 shadow-xs"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Конвертировать и сохранить</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <a
+                  href={getDirectDownloadUrl(metadata.url, selectedFormat, selectedResolution, selectedBitrate, metadata.title, trim)}
+                  download
+                  className="px-3 py-2 rounded border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Прямое скачивание оригинального файла браузером"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Прямая выгрузка</span>
+                </a>
+
+                <button
+                  onClick={handleStartConversion}
+                  disabled={task?.status === 'downloading' || task?.status === 'converting'}
+                  className="px-5 py-2 rounded bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-950 font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-40 shadow-xs"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Конвертировать и сохранить</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -573,16 +603,16 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                   ) : (
                     <Loader2 className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300 animate-spin" />
                   )}
-                  <span className="text-neutral-900 dark:text-neutral-200 font-medium">
+                  <span className="text-neutral-900 dark:text-neutral-200 font-medium truncate max-w-md">
                     {task.status === 'downloading' && 'Загрузка потока с медиасервера...'}
                     {task.status === 'converting' && `Ресемплирование в ${task.format} (${task.resolution || task.bitrate})...`}
                     {task.status === 'completed' && 'Транскодирование завершено. Файл сохранен.'}
-                    {task.status === 'error' && (task.error || 'Ошибка')}
+                    {task.status === 'error' && 'Ошибка при обработке'}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3 font-mono text-[11px] text-neutral-500 dark:text-neutral-400">
-                  {task.status !== 'completed' && <span>{task.downloadSpeed}</span>}
+                  {task.status !== 'completed' && task.status !== 'error' && <span>{task.downloadSpeed}</span>}
                   <span className="font-bold text-neutral-900 dark:text-white">{task.progress}%</span>
                 </div>
               </div>
@@ -601,6 +631,77 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                 />
               </div>
 
+              {/* Error feedback card */}
+              {task.status === 'error' && (() => {
+                const isAuthOrBot = Boolean(
+                  task.error?.includes('bot') ||
+                  task.error?.includes('cookies') ||
+                  task.error?.includes('Sign in') ||
+                  task.error?.includes('403') ||
+                  task.error?.includes('Forbidden') ||
+                  task.error?.includes('блокировк') ||
+                  task.error?.includes('авториз') ||
+                  task.error?.includes('подтвержден')
+                );
+                const cleanError = task.error?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || 'Сбой при транскодировании потока';
+
+                return (
+                  <div className="p-3.5 rounded bg-amber-500/10 border border-amber-500/30 text-xs text-amber-900 dark:text-amber-200 space-y-3 mt-2">
+                    <div className="flex items-start gap-2.5">
+                      <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                      <div className="space-y-1">
+                        <div className="font-bold text-amber-950 dark:text-amber-100 text-xs">
+                          {isAuthOrBot
+                            ? 'YouTube требует подтверждения (Защита от ботов / Sign in required)'
+                            : 'Сбой скачивания потока'}
+                        </div>
+                        <p className="text-[11px] leading-relaxed text-amber-900/90 dark:text-amber-300">
+                          {isAuthOrBot
+                            ? 'YouTube заблокировал анонимный серверный запрос («Sign in to confirm you’re not a bot»). Чтобы скачать это видео, добавьте cookies в Настройках или используйте кнопку «Прямая выгрузка».'
+                            : cleanError}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-1 flex items-center gap-2 flex-wrap">
+                      {onOpenSettings && isAuthOrBot && (
+                        <button
+                          type="button"
+                          onClick={onOpenSettings}
+                          className="px-3 py-1.5 rounded bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        >
+                          <Sliders className="w-3.5 h-3.5" />
+                          <span>Настройки Cookies</span>
+                        </button>
+                      )}
+
+                      <a
+                        href={getDirectDownloadUrl(metadata.url, selectedFormat, selectedResolution, selectedBitrate, metadata.title, trim)}
+                        download
+                        className="px-3 py-1.5 rounded border border-amber-600/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-950 dark:text-amber-200 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                        title="Скачивание напрямую через ваш браузер"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>Прямая выгрузка</span>
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const testUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+                          setUrlInput(testUrl);
+                          handleAnalyze(testUrl);
+                        }}
+                        className="px-3 py-1.5 rounded border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 font-medium text-xs flex items-center gap-1 cursor-pointer"
+                      >
+                        <Sparkles className="w-3 h-3 text-amber-500" />
+                        <span>Тестовое видео (Rick Astley)</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* Completed Action Strip */}
               {task.status === 'completed' && lastFinishedItem && (
                 <div className="pt-2 flex items-center justify-between flex-wrap gap-2 text-xs border-t border-neutral-200 dark:border-neutral-800">
@@ -616,6 +717,16 @@ export const SingleConverter: React.FC<SingleConverterProps> = ({
                       <Play className="w-3 h-3 fill-current" />
                       <span>Воспроизвести</span>
                     </button>
+
+                    <a
+                      href={getDirectDownloadUrl(metadata.url, selectedFormat, selectedResolution, selectedBitrate, metadata.title, trim)}
+                      download
+                      className="px-2.5 py-1 rounded border border-neutral-300 bg-white hover:bg-neutral-100 text-neutral-800 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200 text-xs flex items-center gap-1 cursor-pointer"
+                      title="Прямое сохранение файла"
+                    >
+                      <Download className="w-3 h-3" />
+                      <span>Скачать файл</span>
+                    </a>
 
                     <button
                       onClick={onOpenExplorer}

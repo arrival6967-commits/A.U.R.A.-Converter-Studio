@@ -72,29 +72,68 @@ export const MediaPlayerModal: React.FC<MediaPlayerModalProps> = ({ item, onClos
 
   const numBars = 32;
 
+  const ytMatch = item.originalUrl.match(/(?:youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i);
+  const ytVideoId = ytMatch ? ytMatch[1] : null;
+  const [sourceMode, setSourceMode] = useState<'converted' | 'original'>('converted');
+
   return (
     <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/85 flex items-center justify-center p-4">
       <div className="w-full max-w-xl bg-white dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded-md shadow-2xl overflow-hidden flex flex-col">
         {/* Title bar */}
-        <div className="h-8 bg-neutral-100 dark:bg-neutral-900/90 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between px-3 text-xs select-none">
-          <div className="flex items-center gap-2">
-            {isVideo ? <Film className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" /> : <Music className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300" />}
-            <span className="font-semibold text-neutral-900 dark:text-white truncate max-w-md">
+        <div className="h-9 bg-neutral-100 dark:bg-neutral-900/90 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between px-3 text-xs select-none">
+          <div className="flex items-center gap-2 min-w-0">
+            {isVideo ? <Film className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300 shrink-0" /> : <Music className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300 shrink-0" />}
+            <span className="font-semibold text-neutral-900 dark:text-white truncate">
               A.U.R.A. Player · {item.fileName}
             </span>
           </div>
 
-          <button
-            onClick={onClose}
-            className="w-5 h-5 flex items-center justify-center rounded text-neutral-500 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white cursor-pointer"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            {ytVideoId && (
+              <div className="flex items-center bg-neutral-200 dark:bg-neutral-800 p-0.5 rounded text-[10px] font-mono">
+                <button
+                  onClick={() => setSourceMode('converted')}
+                  className={`px-1.5 py-0.5 rounded transition-colors cursor-pointer ${
+                    sourceMode === 'converted'
+                      ? 'bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white font-bold shadow-2xs'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
+                  }`}
+                >
+                  Файл
+                </button>
+                <button
+                  onClick={() => setSourceMode('original')}
+                  className={`px-1.5 py-0.5 rounded transition-colors cursor-pointer ${
+                    sourceMode === 'original'
+                      ? 'bg-red-600 text-white font-bold shadow-2xs'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
+                  }`}
+                >
+                  YouTube
+                </button>
+              </div>
+            )}
+
+            <button
+              onClick={onClose}
+              className="w-5 h-5 flex items-center justify-center rounded text-neutral-500 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
 
         {/* Viewport */}
         <div className="relative aspect-video bg-neutral-900 dark:bg-black flex items-center justify-center overflow-hidden">
-          {isVideo && item.blobUrl ? (
+          {sourceMode === 'original' && ytVideoId ? (
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${ytVideoId}?autoplay=1`}
+              title={item.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full border-0"
+            />
+          ) : isVideo && item.blobUrl ? (
             <video
               ref={videoRef}
               src={item.blobUrl}

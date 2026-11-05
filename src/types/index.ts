@@ -6,6 +6,8 @@ export type SupportedPlatform =
   | 'twitter' 
   | 'soundcloud' 
   | 'vimeo' 
+  | 'vk'
+  | 'rutube'
   | 'direct';
 
 export type OutputFormat = 'MP4' | 'MP3' | 'WAV' | 'FLAC' | 'AAC';

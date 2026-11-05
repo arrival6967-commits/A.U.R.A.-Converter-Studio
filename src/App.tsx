@@ -13,7 +13,6 @@ import { DownloadHistory } from './components/DownloadHistory';
 import { SettingsModal } from './components/SettingsModal';
 import { MediaPlayerModal } from './components/MediaPlayerModal';
 import { WindowsExplorerModal } from './components/WindowsExplorerModal';
-import { InstallerModal } from './components/InstallerModal';
 import { 
   MediaMetadata, 
   TrimRange, 
@@ -62,7 +61,6 @@ export default function App() {
   // Modals state
   const [isExplorerOpen, setIsExplorerOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isInstallerOpen, setIsInstallerOpen] = useState(false);
   const [activePlayItem, setActivePlayItem] = useState<DownloadHistoryItem | null>(null);
 
   // Trimmer state transfer
@@ -193,7 +191,6 @@ export default function App() {
         currentFolder={currentFolder}
         onOpenFolderPicker={handlePickDirectory}
         onOpenExplorer={() => setIsExplorerOpen(true)}
-        onOpenInstaller={() => setIsInstallerOpen(true)}
         isDark={isDark}
         onToggleTheme={() => setIsDark(!isDark)}
         isMaximized={isMaximized}
@@ -238,7 +235,6 @@ export default function App() {
             batchCount={0}
             currentFolder={currentFolder}
             onOpenExplorer={() => setIsExplorerOpen(true)}
-            onOpenInstaller={() => setIsInstallerOpen(true)}
           />
 
           {/* Active Viewport */}
@@ -250,6 +246,7 @@ export default function App() {
                 onOpenTrimmerForMedia={handleOpenTrimmerForMedia}
                 onAddHistoryItem={handleAddHistoryItem}
                 onOpenMediaPlayer={(item) => setActivePlayItem(item)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
               />
             )}
 
@@ -311,12 +308,6 @@ export default function App() {
       <MediaPlayerModal
         item={activePlayItem}
         onClose={() => setActivePlayItem(null)}
-      />
-
-      {/* Windows EXE Installer Setup Wizard Modal */}
-      <InstallerModal
-        isOpen={isInstallerOpen}
-        onClose={() => setIsInstallerOpen(false)}
       />
     </div>
   );

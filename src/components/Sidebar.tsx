@@ -17,7 +17,6 @@ interface SidebarProps {
   batchCount: number;
   currentFolder: string;
   onOpenExplorer: () => void;
-  onOpenInstaller: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -27,7 +26,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   batchCount,
   currentFolder,
   onOpenExplorer,
-  onOpenInstaller,
 }) => {
   const navItems: { id: NavTab; label: string; icon: React.ReactNode; badge?: number }[] = [
     {
@@ -113,15 +111,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
 
-        <button
-          onClick={onOpenInstaller}
-          className="w-full flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded bg-white hover:bg-neutral-200 border border-neutral-300 text-neutral-900 dark:bg-neutral-900 dark:hover:bg-neutral-850 dark:border-neutral-800 dark:text-neutral-200 text-xs font-medium cursor-pointer transition-colors shadow-2xs"
-        >
-          <span className="font-mono text-[11px] font-semibold">Установщик .EXE</span>
-        </button>
-
         {/* Updated Company Name & Version 1.1 */}
-        <div className="flex items-center justify-between text-[10px] text-neutral-500 dark:text-neutral-400 px-1 font-mono">
+        <div className="flex items-center justify-between text-[10px] text-neutral-500 dark:text-neutral-400 px-1 font-mono pt-1">
           <span className="truncate pr-1">The Godot Entertaiment Inc.</span>
           <span className="shrink-0 font-bold">1.1</span>
         </div>

@@ -69,6 +69,9 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [lastSavedItem, setLastSavedItem] = useState<DownloadHistoryItem | null>(null);
 
+  const ytMatch = media.url.match(/(?:youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i);
+  const ytVideoId = ytMatch ? ytMatch[1] : null;
+
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
   const playbackTimerRef = useRef<number | null>(null);
@@ -195,7 +198,9 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
         media.author,
         resolution,
         trimDuration,
-        bitrate
+        bitrate,
+        media.url,
+        { start: startTime, end: endTime, enabled: true }
       );
 
       await saveMediaFileToFolder(blob, outFileName);
@@ -291,6 +296,19 @@ export const TrimmerStudio: React.FC<TrimmerStudioProps> = ({
             </select>
           </div>
         </div>
+
+        {/* Video Player Preview for authentic audiovisual trimming */}
+        {ytVideoId && (
+          <div className="relative aspect-video max-h-60 mx-auto w-full rounded-md overflow-hidden bg-black border border-neutral-300 dark:border-neutral-800 shadow-xs">
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${ytVideoId}?start=${Math.floor(startTime)}`}
+              title={media.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full border-0"
+            />
+          </div>
+        )}
 
         {/* Media Snippet Bar */}
         <div className="p-3 rounded-md bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 shadow-2xs flex items-center justify-between gap-4">

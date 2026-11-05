@@ -13,7 +13,6 @@ interface TitleBarProps {
   currentFolder: string;
   onOpenFolderPicker: () => void;
   onOpenExplorer: () => void;
-  onOpenInstaller: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
   isMaximized: boolean;
@@ -26,7 +25,6 @@ export const TitleBar: React.FC<TitleBarProps> = ({
   currentFolder,
   onOpenFolderPicker,
   onOpenExplorer,
-  onOpenInstaller,
   isDark,
   onToggleTheme,
   isMaximized,
@@ -67,17 +65,8 @@ export const TitleBar: React.FC<TitleBarProps> = ({
         </button>
       </div>
 
-      {/* Zone 3: Windows EXE Installer & Controls */}
+      {/* Zone 3: Controls */}
       <div className="flex items-center gap-1.5 shrink-0">
-        <button
-          onClick={onOpenInstaller}
-          title="Скачать EXE установщик для Windows"
-          className="flex items-center gap-1 px-2.5 py-1 rounded bg-neutral-900 text-white hover:bg-neutral-800 dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-200 font-semibold text-[11px] cursor-pointer shadow-xs transition-colors"
-        >
-          <span>Скачать .EXE</span>
-        </button>
-
-        <div className="h-3 w-px bg-neutral-300 dark:bg-neutral-800 mx-0.5" />
 
         <button
           onClick={onToggleTheme}

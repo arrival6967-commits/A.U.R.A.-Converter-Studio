@@ -16,7 +16,7 @@ import {
   AudioBitrate, 
   DownloadHistoryItem 
 } from '../types';
-import { SAMPLE_PLAYLISTS, formatDurationSimple } from '../utils/mediaParser';
+import { SAMPLE_PLAYLISTS, formatDurationSimple, parseMediaUrl } from '../utils/mediaParser';
 import { createRealMediaBlob, saveMediaFileToFolder } from '../utils/mediaGenerator';
 
 interface BatchPlaylistItem {
@@ -96,69 +96,85 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
     })));
   };
 
-  const handleParseCustom = () => {
+  const handleParseCustom = async () => {
     if (!playlistInput.trim()) return;
     setIsParsing(true);
 
-    setTimeout(() => {
+    try {
       const lines = playlistInput.split('\n').map(l => l.trim()).filter(l => l.length > 5);
       
       if (lines.length > 1) {
-        setPlaylistTitle(`Пакетный список (${lines.length} элементов)`);
-        setItems(lines.map((url, idx) => ({
-          id: 'custom_' + Date.now() + '_' + idx,
-          title: `Медиа-поток #${idx + 1} (${url.split('/').pop()?.slice(0, 24) || 'stream'})`,
-          author: 'A.U.R.A. Batch',
-          duration: 120 + (idx * 25) % 180,
-          thumbnail: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=80',
-          url,
-          selected: true,
-          format: globalFormat,
-          resolution: globalResolution,
-          bitrate: globalBitrate,
-          status: 'idle',
-          progress: 0,
-        })));
+        setPlaylistTitle(`Пакетная очередь (${lines.length} источников)`);
+        const parsedItems = await Promise.all(
+          lines.map(async (url, idx) => {
+            try {
+              const meta = await parseMediaUrl(url);
+              return {
+                id: 'custom_' + Date.now() + '_' + idx,
+                title: meta.title,
+                author: meta.author,
+                duration: meta.duration,
+                thumbnail: meta.thumbnail,
+                url,
+                selected: true,
+                format: globalFormat,
+                resolution: globalResolution,
+                bitrate: globalBitrate,
+                status: 'idle' as const,
+                progress: 0,
+              };
+            } catch {
+              return {
+                id: 'custom_' + Date.now() + '_' + idx,
+                title: `Медиа-поток #${idx + 1}`,
+                author: 'A.U.R.A. Batch',
+                duration: 120,
+                thumbnail: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=80',
+                url,
+                selected: true,
+                format: globalFormat,
+                resolution: globalResolution,
+                bitrate: globalBitrate,
+                status: 'idle' as const,
+                progress: 0,
+              };
+            }
+          })
+        );
+        setItems(parsedItems);
       } else {
-        const found = SAMPLE_PLAYLISTS.find(p => p.url.toLowerCase() === playlistInput.toLowerCase().trim());
+        const singleUrl = lines[0] || playlistInput.trim();
+        const found = SAMPLE_PLAYLISTS.find(p => p.url.toLowerCase() === singleUrl.toLowerCase());
         if (found) {
           handleLoadSample(found);
         } else {
-          setPlaylistTitle('Распознанный плейлист');
-          setItems([
-            {
-              id: 'pl_01',
-              title: 'Трек 01 (Studio Master)',
-              author: 'A.U.R.A.',
-              duration: 210,
-              thumbnail: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&auto=format&fit=crop&q=80',
-              url: playlistInput,
-              selected: true,
-              format: globalFormat,
-              resolution: globalResolution,
-              bitrate: globalBitrate,
-              status: 'idle',
-              progress: 0,
-            },
-            {
-              id: 'pl_02',
-              title: 'Трек 02 (High Bitrate)',
-              author: 'A.U.R.A.',
-              duration: 185,
-              thumbnail: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&auto=format&fit=crop&q=80',
-              url: playlistInput + '#2',
-              selected: true,
-              format: globalFormat,
-              resolution: globalResolution,
-              bitrate: globalBitrate,
-              status: 'idle',
-              progress: 0,
-            }
-          ]);
+          try {
+            const meta = await parseMediaUrl(singleUrl);
+            setPlaylistTitle(`Распознан: ${meta.title.slice(0, 36)}...`);
+            setItems([
+              {
+                id: 'pl_' + Date.now() + '_0',
+                title: meta.title,
+                author: meta.author,
+                duration: meta.duration,
+                thumbnail: meta.thumbnail,
+                url: singleUrl,
+                selected: true,
+                format: globalFormat,
+                resolution: globalResolution,
+                bitrate: globalBitrate,
+                status: 'idle',
+                progress: 0,
+              }
+            ]);
+          } catch {
+            setPlaylistTitle('Распознанный плейлист');
+          }
         }
       }
+    } finally {
       setIsParsing(false);
-    }, 450);
+    }
   };
 
   const handleToggleSelectAll = (select: boolean) => {
@@ -206,7 +222,8 @@ export const BatchPlaylistConverter: React.FC<BatchPlaylistConverterProps> = ({
           currentItem.author,
           currentItem.resolution,
           currentItem.duration,
-          currentItem.bitrate
+          currentItem.bitrate,
+          currentItem.url
         );
 
         await saveMediaFileToFolder(blob, fileName);
